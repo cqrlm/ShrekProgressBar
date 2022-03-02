@@ -25,9 +25,6 @@ class ProgressBarUi : BasicProgressBarUI() {
     private var offset = 0
 
     @Volatile
-    private var offset2 = 0
-
-    @Volatile
     private var velocity = 1
 
     override fun getPreferredSize(c: JComponent): Dimension =
@@ -95,22 +92,20 @@ class ProgressBarUi : BasicProgressBarUI() {
                     JBUIScale.scale(7f)
                 )
             )
-            val periodLength = JBUI.scale(16)
             val containingRoundRect = Area(RoundRectangle2D.Float(1f, 1f, width - 4f, height - 4f, R, R))
             fill(containingRoundRect)
-            offset = (offset + 1) % periodLength
-            offset2 += velocity
-            if (offset2 <= 2) {
-                offset2 = 2
+            offset += velocity
+            if (offset <= 2) {
+                offset = 2
                 velocity = 1
-            } else if (offset2 >= width - JBUI.scale(15)) {
-                offset2 = width - JBUI.scale(15)
+            } else if (offset >= width - JBUI.scale(15)) {
+                offset = width - JBUI.scale(15)
                 velocity = -1
             }
 
             val icon = if (velocity > 0) GraphicAssets.SHREK else GraphicAssets.R_SHREK
 
-            icon.paintIcon(progressBar, g, offset2 - JBUI.scale(3), JBUI.scale(2))
+            icon.paintIcon(progressBar, g, offset - JBUI.scale(3), JBUI.scale(2))
             translate(0, -(c.height - height) / 2)
         }
 
